@@ -10,14 +10,18 @@ fn main() {
     let orders: Vec<Vec<u64>> = read_orders();
     let mut coffe_act:u64 = 0;
     let mut threads = vec![];
-    let cacao_container = Arc::new(Mutex::new(Container::new(100000, ContainerTypes::Cacao)));
+    let mut containers_vec = vec![];
+    for container_type in ContainerTypes::iter() {
+        let container = Arc::new(Mutex::new(Container::new(15, container_type)));
+        containers_vec.push(container);
+    }
     for order in orders {
         let order_act: Vec<u64> = order.clone();
-        let cacao_ref = Arc::clone(&cacao_container);
+        let containers_ref = Arc::clone(&Arc::new(containers_vec.clone()));
         coffe_act = coffe_act + 1;
         let handle = thread::spawn(move || {
             println!("Preparing coffee {}",coffe_act);
-            handle_order(order_act, cacao_ref);
+            handle_order(order_act, containers_ref);
             println!("Coffee {} has been done",coffe_act);
         });
         threads.push(handle);
@@ -44,11 +48,11 @@ fn read_orders() -> Vec<Vec<u64>> {
     orders  
 }
 
-fn handle_order(order: Vec<u64>, cacao_cont: Arc<Mutex<Container>>) {
-    for amount in order{
-        let cacao = cacao_cont.lock().expect("Error trying to use container");
-        cacao.serve(amount);
-        thread::sleep(Duration::from_millis(amount))
+fn handle_order(order: Vec<u64>, containers: Arc<Vec<Arc<Mutex<Container>>>>) {
+    for (index,amount) in order.iter().enumerate(){
+        let cont_act = containers[index].lock().expect("Error trying to use container");
+        cont_act.serve(*amount);
+        thread::sleep(Duration::from_millis(*amount))
     }
     println!("Cafe listo")
 }

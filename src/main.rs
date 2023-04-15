@@ -1,28 +1,67 @@
 use std::fs;
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::time::Duration;
 
-use tp1::containers::containers::Container;
+use tp1::containers::containers_class::Container;
 use tp1::containers::enum_containers::ContainerTypes;
 
+use tp1::dispensers::dispensers_class::Dispensers;
+
+use std_semaphore::Semaphore;
+
+const N_DISPENSERS: isize = 6;
+const MAX_CAPACITY_CONTAINERS: u64 = 100;
+
 fn main() {
+    /* Esta funcion main representa el controlador de una cafetera con N dispensadores conectados a los contenedores
+    de cada ingrediente posiblemente necesario en la realizacion de un cafe. */
+
+    // Leo las orders del archivo orders.txt e inicio contador de cafes
     let orders: Vec<Vec<u64>> = read_orders();
     let mut coffe_act: u64 = 0;
+
+    // Aniado un array de handles para los threads correspondientes a cada orden
     let mut threads = vec![];
+
+    // Creo un array de containers con su debida capacidad
     let mut containers_vec = vec![];
     for container_type in ContainerTypes::iter() {
-        let container = Arc::new(Mutex::new(Container::new(15, container_type)));
+        let container = Arc::new(Mutex::new(Container::new(
+            MAX_CAPACITY_CONTAINERS,
+            container_type,
+        )));
         containers_vec.push(container);
     }
+
+    // Creo un array de dispensers con su referencia a los containers que lo proveen
+    let dispensers: Vec<Arc<Mutex<Dispensers>>> = (0..N_DISPENSERS)
+        .map(|_| {
+            let containers_ref = Arc::clone(&Arc::new(containers_vec.clone()));
+            Arc::new(Mutex::new(Dispensers::new(containers_ref)))
+        })
+        .collect();
+
+    // Creo un semaforo que va a permitir acceder a los dispensers
+    let sem = Arc::new(Semaphore::new(N_DISPENSERS));
+
+    // Itero las orders, pido un dispenser y se prepara la orden en ese dispenser
     for order in orders {
+        coffe_act += 1;
+        println!("Buscando dispenser para cafe {}", coffe_act);
         let order_act: Vec<u64> = order.clone();
-        let containers_ref = Arc::clone(&Arc::new(containers_vec.clone()));
-        coffe_act = coffe_act + 1;
+        let sem_clone = Arc::clone(&sem);
+        let dispensers_clone = Arc::clone(&Arc::new(dispensers.clone()));
         let handle = thread::spawn(move || {
-            println!("Preparing coffee {}", coffe_act);
-            handle_order(order_act, containers_ref);
-            println!("Coffee {} has been done", coffe_act);
+            sem_clone.acquire();
+            for dispenser in dispensers_clone.iter() {
+                let mut dispenser_act = dispenser.lock().expect("Error al consultar el dispenser");
+                if !dispenser_act.is_busy() {
+                    println!("Dispenser para cafe {} encontrado", coffe_act);
+                    dispenser_act.prepare(order_act, coffe_act);
+                    break;
+                }
+            }
+            sem_clone.release()
         });
         threads.push(handle);
     }
@@ -30,7 +69,7 @@ fn main() {
         handle.join().expect("Error joining a thread");
     }
 
-    println!("All coffees have been prepared");
+    println!("Todos los cafes fueron preparados!");
 }
 
 fn read_orders() -> Vec<Vec<u64>> {
@@ -46,15 +85,4 @@ fn read_orders() -> Vec<Vec<u64>> {
         orders.push(line_orders);
     }
     orders
-}
-
-fn handle_order(order: Vec<u64>, containers: Arc<Vec<Arc<Mutex<Container>>>>) {
-    for (index, amount) in order.iter().enumerate() {
-        let cont_act = containers[index]
-            .lock()
-            .expect("Error trying to use container");
-        cont_act.serve(*amount);
-        thread::sleep(Duration::from_millis(*amount))
-    }
-    println!("Cafe listo")
 }

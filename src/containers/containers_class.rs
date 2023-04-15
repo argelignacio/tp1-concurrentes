@@ -1,6 +1,10 @@
 use crate::containers::enum_containers::ContainerTypes;
 use core::panic;
-use std::sync::{Arc, Mutex};
+use std::{
+    sync::{Arc, Mutex},
+    thread,
+    time::Duration,
+};
 
 pub struct Container {
     max_amount: u64,
@@ -23,6 +27,7 @@ impl Container {
             panic!("NECESITA RECARGAR")
         }
         *total_amount -= amount;
+        thread::sleep(Duration::from_millis(*total_amount));
         let percentage: f64 = ((*total_amount) as f64 / (self.max_amount) as f64) * 100.0;
         if percentage < 15.0 {
             println!(

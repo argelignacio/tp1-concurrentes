@@ -3,7 +3,7 @@ pub enum ContainerTypes {
     Agua,
     Cafe,
     Espuma,
-    Cacao
+    Cacao,
 }
 impl ContainerTypes {
     pub fn iter() -> impl Iterator<Item = ContainerTypes> {

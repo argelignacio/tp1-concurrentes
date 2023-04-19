@@ -28,21 +28,24 @@ impl Container {
         if amount > *total_amount {
             let to_recharge = self.refiller.recharge(self.max_amount);
             if to_recharge == 0 {
-                return Err(format!("Nos quedamos sin {:#?}", self.cont_type));
+                return Err(format!("Nos quedamos sin {:#?}.", self.cont_type));
             } else {
-                println!("El contenedor de {:#?} ha sido recargado.", self.cont_type);
+                println!(
+                    "INFO: El contenedor de {:#?} ha sido recargado.",
+                    self.cont_type
+                );
                 *total_amount += to_recharge;
             }
         }
         *total_amount -= amount;
         thread::sleep(Duration::from_millis(*total_amount));
         let percentage: f64 = ((*total_amount) as f64 / (self.max_amount) as f64) * 100.0;
-        if percentage < 15.0 {
-            println!(
-                "El contenedor de {:#?} tiene {}% de contenido.",
-                self.cont_type, percentage
-            )
-        }
+
+        println!(
+            "INFO: El contenedor de {:#?} tiene {}% de contenido.",
+            self.cont_type, percentage
+        );
+
         Ok(())
     }
 }

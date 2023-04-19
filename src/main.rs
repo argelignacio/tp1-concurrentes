@@ -43,30 +43,41 @@ fn main() {
 
     // Creo un semaforo que va a permitir acceder a los dispensers
     let sem = Arc::new(Semaphore::new(N_DISPENSERS));
-
+    let cantidad_cafes: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
     // Itero las orders, pido un dispenser y se prepara la orden en ese dispenser
     for order in orders {
+        let cantidad_cafes_clone = Arc::clone(&cantidad_cafes);
         coffe_act += 1;
-        println!("Buscando dispenser para cafe {}", coffe_act);
+        println!("\nINFO: Buscando dispenser para cafe {}.\n", coffe_act);
         let order_act: Vec<u64> = order.clone();
         let sem_clone = Arc::clone(&sem);
         let dispensers_clone = Arc::clone(&Arc::new(dispensers.clone()));
         let handle = thread::spawn(move || {
             sem_clone.acquire();
             for dispenser in dispensers_clone.iter() {
-                let mut dispenser_act = dispenser.lock().expect("Error al consultar el dispenser");
+                let mut dispenser_act = dispenser.lock().expect("Error al consultar el dispenser.");
                 if !dispenser_act.is_busy() {
-                    println!("Dispenser para cafe {} encontrado", coffe_act);
+                    println!("INFO: Dispenser para cafe {} encontrado.", coffe_act);
                     if let Err(error) = dispenser_act.prepare(order_act, coffe_act) {
                         println!(
-                            "No se pudo terminar el cafe {} debido a un error",
+                            "ERR: No se pudo terminar el cafe {} debido a un error:",
                             coffe_act
                         );
-                        println!("{}", error);
-                    };
+                        println!("\t {}", error);
+                    } else {
+                        let mut cant = cantidad_cafes_clone
+                            .lock()
+                            .expect("Error al ver cantidad de cafes.");
+                        *cant += 1;
+                        println!("INFO: {} cafes hechos hasta ahora.", cant);
+                        drop(cant);
+                    }
+
                     break;
                 }
             }
+            println!("INFO: Finalizacion de preparacion del cafe. Dispenser liberado.");
+            println!("------------------------------------------------------------------\n\n");
             sem_clone.release()
         });
         threads.push(handle);

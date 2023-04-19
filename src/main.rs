@@ -64,13 +64,15 @@ fn main() {
                             coffe_act
                         );
                         println!("\t {}", error);
-                    }else{
-                        let mut cant = cantidad_cafes_clone.lock().expect("Error al ver cantidad de cafes.");
+                    } else {
+                        let mut cant = cantidad_cafes_clone
+                            .lock()
+                            .expect("Error al ver cantidad de cafes.");
                         *cant += 1;
                         println!("INFO: {} cafes hechos hasta ahora.", cant);
                         drop(cant);
                     }
-                    
+
                     break;
                 }
             }

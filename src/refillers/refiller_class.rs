@@ -16,7 +16,7 @@ impl Refiller {
     pub fn recharge(&mut self, amount: u64) -> u64 {
         if amount == 0 {
             println!(
-                "No se puede recargar, recargador de {:#?} sin contenido.",
+                "ERR: No se puede recargar, recargador de {:#?} sin contenido.",
                 self.refiller_type
             );
             return 0;

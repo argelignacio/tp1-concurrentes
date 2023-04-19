@@ -1,6 +1,4 @@
-use std::f32::INFINITY;
-
-use crate::refillers::{enum_refillers::RefillerTypes};
+use crate::refillers::enum_refillers::RefillerTypes;
 const CAPACITY_REFILLER_AGUA: u64 = 0xFFFFFFFFFFFFFFFF;
 const CAPACITY_REFILLER_CACAO: u64 = 0;
 const CAPACITY_REFILLER_CAFE: u64 = 100;
@@ -23,7 +21,7 @@ impl ContainerTypes {
         ]
         .into_iter()
     }
-    pub fn get_refiller(&self) -> RefillerTypes{
+    pub fn get_refiller(&self) -> RefillerTypes {
         match self {
             ContainerTypes::Agua => RefillerTypes::Agua,
             ContainerTypes::Cacao => RefillerTypes::Cacao,

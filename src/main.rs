@@ -57,8 +57,11 @@ fn main() {
                 let mut dispenser_act = dispenser.lock().expect("Error al consultar el dispenser");
                 if !dispenser_act.is_busy() {
                     println!("Dispenser para cafe {} encontrado", coffe_act);
-                    if let Err(error) = dispenser_act.prepare(order_act, coffe_act){
-                        println!("No se pudo terminar el cafe {} debido a un error", coffe_act);
+                    if let Err(error) = dispenser_act.prepare(order_act, coffe_act) {
+                        println!(
+                            "No se pudo terminar el cafe {} debido a un error",
+                            coffe_act
+                        );
                         println!("{}", error);
                     };
                     break;

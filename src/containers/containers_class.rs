@@ -10,7 +10,7 @@ pub struct Container {
     max_amount: u64,
     total_amount: Arc<Mutex<u64>>,
     cont_type: ContainerTypes,
-    refiller: Refiller
+    refiller: Refiller,
 }
 
 impl Container {
@@ -23,18 +23,14 @@ impl Container {
         }
     }
 
-
-    pub fn serve(&mut self, amount: u64) -> Result<(),String> {
+    pub fn serve(&mut self, amount: u64) -> Result<(), String> {
         let mut total_amount = self.total_amount.lock().expect("Problem with container!");
         if amount > *total_amount {
             let to_recharge = self.refiller.recharge(self.max_amount);
-            if to_recharge == 0{
-                return Err(format!("Nos quedamos sin {:#?}", self.cont_type))
-            }else{
-                println!(
-                    "El contenedor de {:#?} ha sido recargado.",
-                    self.cont_type
-                );
+            if to_recharge == 0 {
+                return Err(format!("Nos quedamos sin {:#?}", self.cont_type));
+            } else {
+                println!("El contenedor de {:#?} ha sido recargado.", self.cont_type);
                 *total_amount += to_recharge;
             }
         }

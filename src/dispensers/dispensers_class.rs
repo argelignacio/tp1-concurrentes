@@ -14,15 +14,13 @@ impl Dispensers {
         }
     }
 
-    pub fn prepare(&mut self, order: Vec<u64>, coffe_act: u64) -> Result<(), String>{
+    pub fn prepare(&mut self, order: Vec<u64>, coffe_act: u64) -> Result<(), String> {
         *self.busy.lock().expect("Error marcando ocupacion") = true;
         for (index, amount) in order.iter().enumerate() {
             let mut cont_act = self.containers[index]
                 .lock()
                 .expect("Error trying to use container");
-            if let Err(error) = cont_act.serve(*amount){
-                return Err(error)
-            }
+            cont_act.serve(*amount)?
         }
         println!("Cafe {} listo", coffe_act);
         *self.busy.lock().expect("Error marcando ocupacion") = false;
@@ -32,5 +30,4 @@ impl Dispensers {
     pub fn is_busy(&self) -> bool {
         *self.busy.lock().expect("Error al consultar disponibilidad")
     }
-    
 }

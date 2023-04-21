@@ -32,12 +32,13 @@ fn main() {
         )));
         containers_vec.push(container);
     }
-
+    let mut i = 0;
     // Creo un array de dispensers con su referencia a los containers que lo proveen
     let dispensers: Vec<Arc<Mutex<Dispensers>>> = (0..N_DISPENSERS)
         .map(|_| {
+            i+= 1;
             let containers_ref = Arc::clone(&Arc::new(containers_vec.clone()));
-            Arc::new(Mutex::new(Dispensers::new(containers_ref)))
+            Arc::new(Mutex::new(Dispensers::new(containers_ref, i.clone())))
         })
         .collect();
 

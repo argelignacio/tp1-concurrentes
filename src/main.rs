@@ -1,3 +1,4 @@
+use std::collections::VecDeque;
 use std::fs;
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -34,14 +35,14 @@ fn main() {
     }
     let mut i = 0;
     // Creo un array de dispensers con su referencia a los containers que lo proveen
-    let dispensers: Vec<Arc<Mutex<Dispensers>>> = (0..N_DISPENSERS)
+    let dispensers: VecDeque<Arc<Mutex<Dispensers>>> = (0..N_DISPENSERS)
         .map(|_| {
-            i+= 1;
+            i += 1;
             let containers_ref = Arc::clone(&Arc::new(containers_vec.clone()));
-            Arc::new(Mutex::new(Dispensers::new(containers_ref, i.clone())))
+            Arc::new(Mutex::new(Dispensers::new(containers_ref, i)))
         })
         .collect();
-
+    let dispensers_ref = Arc::new(Mutex::new(dispensers));
     // Creo un semaforo que va a permitir acceder a los dispensers
     let sem = Arc::new(Semaphore::new(N_DISPENSERS));
     let cantidad_cafes: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
@@ -52,34 +53,47 @@ fn main() {
         println!("\nINFO: Buscando dispenser para cafe {}.\n", coffe_act);
         let order_act: Vec<u64> = order.clone();
         let sem_clone = Arc::clone(&sem);
-        let dispensers_clone = Arc::clone(&Arc::new(dispensers.clone()));
+        let dispensers_clone = dispensers_ref.clone();
         let handle = thread::spawn(move || {
             sem_clone.acquire();
-            for dispenser in dispensers_clone.iter() {
-                let mut dispenser_act = dispenser.lock().expect("Error al consultar el dispenser.");
-                if !dispenser_act.is_busy() {
-                    println!("INFO: Dispenser para cafe {} encontrado.", coffe_act);
-                    if let Err(error) = dispenser_act.prepare(order_act, coffe_act) {
-                        println!(
-                            "ERR: No se pudo terminar el cafe {} debido a un error:",
-                            coffe_act
-                        );
-                        println!("\t {}", error);
+            let dispenser_guard = match dispensers_clone.lock() {
+                Ok(mut dispensers_clone_act) => {
+                    if let Some(dispenser) = dispensers_clone_act.pop_front() {
+                        dispenser
                     } else {
-                        let mut cant = cantidad_cafes_clone
-                            .lock()
-                            .expect("Error al ver cantidad de cafes.");
-                        *cant += 1;
-                        println!("INFO: {} cafes hechos hasta ahora.", cant);
-                        drop(cant);
+                        panic!("No hay dispensers, acceso invalido")
                     }
-
-                    break;
+                }
+                Err(_e) => {
+                    panic!("Error locking dispensers");
+                }
+            };
+            if let Ok(mut dispenser) = dispenser_guard.lock() {
+                println!("INFO: Dispenser para cafe {} encontrado.", coffe_act);
+                if let Err(error) = dispenser.prepare(order_act, coffe_act) {
+                    println!(
+                        "ERR: No se pudo terminar el cafe {} debido a un error:",
+                        coffe_act
+                    );
+                    println!("\t {}", error);
+                } else {
+                    let mut cant = cantidad_cafes_clone
+                        .lock()
+                        .expect("Error al ver cantidad de cafes.");
+                    *cant += 1;
+                    println!("INFO: {} cafes hechos hasta ahora.", cant);
+                    drop(cant);
                 }
             }
             println!("INFO: Finalizacion de preparacion del cafe. Dispenser liberado.");
             println!("------------------------------------------------------------------\n\n");
-            sem_clone.release()
+
+            if let Ok(mut dispensers_clone_act) = dispensers_clone.lock() {
+                dispensers_clone_act.push_front(dispenser_guard);
+                sem_clone.release()
+            } else {
+                println!("Por error interno, se perdio un dispenser")
+            }
         });
         threads.push(handle);
     }

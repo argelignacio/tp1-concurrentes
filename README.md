@@ -38,6 +38,6 @@ Padrón: 104351
 
 - Los contenedores son contenidos por un Arc Mutex, que evita que sean tomados por 2 dispensers a la vez.
 
-- En mi implementación, los dispenser sirven siempre en el mismo orden. Este orden esta dado por el iter definido en el enum de contenedores. Se podría optimizar para ir intercalando y ganando tiempo, pero no es un requerimiento y en la realidad al hacer un cafe los ingredientes no son permutables en orden al preparar un cafe.
+- En mi implementación, los dispenser sirven siempre en el mismo orden. Este orden esta dado por el iter definido en el enum de contenedores. Se podría optimizar para ir intercalando y ganando tiempo, pero no es un requerimiento y en la realidad al hacer un cafe los ingredientes no son permutables en orden.
 
 - La recarga no necesita de ningún tipo de sincronización, ya que son valores accedidos por y solo por un contenedor. Debido a esto, decidí que los contenedores secundarios para recargar ingredientes, formen parte del mismo struct de cada contenedor.

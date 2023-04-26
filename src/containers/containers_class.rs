@@ -1,9 +1,6 @@
 use crate::{containers::enum_containers::ContainerTypes, refillers::refiller_class::Refiller};
 
-use std::{
-    thread,
-    time::Duration,
-};
+use std::{thread, time::Duration};
 
 pub struct Container {
     max_amount: u64,
@@ -50,19 +47,22 @@ impl Container {
                 self.cont_type, percentage
             );
         }
-        if report{
+        if report {
             self.periodic_reports(percentage)
         }
-            
-    Ok(())
+
+        Ok(())
     }
-    
-    pub fn periodic_reports(&self, percentage: f64){
+
+    pub fn periodic_reports(&self, percentage: f64) {
         println!(
             "INFO: El contenedor de {:#?} tiene {}% de contenido.",
             self.cont_type, percentage
         );
-        println!("INFO: Hasta el momento se han utilizado {} de {:#?}", self.consumed, self.cont_type);
+        println!(
+            "INFO: Hasta el momento se han utilizado {} de {:#?}",
+            self.consumed, self.cont_type
+        );
         self.refiller.report();
     }
 }

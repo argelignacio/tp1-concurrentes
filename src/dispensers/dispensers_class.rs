@@ -29,5 +29,4 @@ impl Dispensers {
         println!("Cafe {} listo", coffe_act);
         Ok(())
     }
-
 }

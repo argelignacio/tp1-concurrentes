@@ -1,5 +1,3 @@
-use std::default;
-
 use crate::refillers::enum_refillers::RefillerTypes;
 
 pub struct Refiller {
@@ -14,7 +12,7 @@ impl Refiller {
         Self {
             amount,
             refiller_type: refiller,
-            consumed
+            consumed,
         }
     }
 
@@ -36,12 +34,14 @@ impl Refiller {
         }
     }
 
-    pub fn report(&self){
+    pub fn report(&self) {
         match &self.refiller_type {
-            RefillerTypes::Agua => {},
-            RefillerTypes::Cacao => {},
-            default =>println!("Hasta el momento se han utilizado {} de {:#?}", self.consumed, default),
+            RefillerTypes::Agua => {}
+            RefillerTypes::Cacao => {}
+            default => println!(
+                "Hasta el momento se han utilizado {} de {:#?}",
+                self.consumed, default
+            ),
         };
-        
     }
 }

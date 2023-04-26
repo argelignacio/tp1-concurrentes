@@ -32,7 +32,7 @@ fn main() {
         let container: Arc<Mutex<Container>> = Arc::new(Mutex::new(Container::new(
             MAX_CAPACITY_CONTAINERS,
             container_type,
-            ALERT_CAPACITY
+            ALERT_CAPACITY,
         )));
         containers_vec.push(container);
     }
@@ -41,11 +41,13 @@ fn main() {
     let dispensers: VecDeque<Arc<Mutex<Dispensers>>> = (0..N_DISPENSERS)
         .map(|_| {
             i += 1;
-            let containers_ref: Arc<Vec<Arc<Mutex<Container>>>> = Arc::clone(&Arc::new(containers_vec.clone()));
+            let containers_ref: Arc<Vec<Arc<Mutex<Container>>>> =
+                Arc::clone(&Arc::new(containers_vec.clone()));
             Arc::new(Mutex::new(Dispensers::new(containers_ref, i)))
         })
         .collect();
-    let dispensers_ref: Arc<Mutex<VecDeque<Arc<Mutex<Dispensers>>>>> = Arc::new(Mutex::new(dispensers));
+    let dispensers_ref: Arc<Mutex<VecDeque<Arc<Mutex<Dispensers>>>>> =
+        Arc::new(Mutex::new(dispensers));
     // Creo un semáforo que va a permitir acceder a los dispensers
     let sem: Arc<Semaphore> = Arc::new(Semaphore::new(N_DISPENSERS));
     let cantidad_cafes: Arc<Mutex<i32>> = Arc::new(Mutex::new(0));
@@ -72,12 +74,14 @@ fn main() {
                 }
             };
             if let Ok(mut dispenser) = dispenser_guard.lock() {
-                println!("INFO: Dispenser la orden {} encontrado.", coffee_act);
+                println!("INFO: Dispenser para la orden {} encontrado.", coffee_act);
                 let mut cant: std::sync::MutexGuard<i32> = cantidad_cafes_clone
-                        .lock()
-                        .expect("Error al ver cantidad de cafes.");
-                
-                if let Err(error) = dispenser.prepare(order_act, coffee_act, *cant % PERIOD_TO_REPORT==0) {
+                    .lock()
+                    .expect("Error al ver cantidad de cafes.");
+
+                if let Err(error) =
+                    dispenser.prepare(order_act, coffee_act, *cant % PERIOD_TO_REPORT == 0)
+                {
                     println!(
                         "ERR: No se pudo terminar la orden {} debido a un error:",
                         coffee_act

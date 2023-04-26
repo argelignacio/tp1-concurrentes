@@ -14,10 +14,10 @@ pub enum ContainerTypes {
 impl ContainerTypes {
     pub fn iter() -> impl Iterator<Item = ContainerTypes> {
         vec![
-            ContainerTypes::Cacao,
-            ContainerTypes::Agua,
             ContainerTypes::Cafe,
+            ContainerTypes::Agua,
             ContainerTypes::Espuma,
+            ContainerTypes::Cacao,
         ]
         .into_iter()
     }

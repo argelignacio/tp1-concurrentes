@@ -14,14 +14,14 @@ impl Dispensers {
         }
     }
 
-    pub fn prepare(&mut self, order: Vec<u64>, coffe_act: u64) -> Result<(), String> {
+    pub fn prepare(&mut self, order: Vec<u64>, coffe_act: u64, report: bool) -> Result<(), String> {
         println!(
             "Cafe {} se esta preparando en dispenser {}",
             coffe_act, self.numb
         );
         for (index, amount) in order.iter().enumerate() {
             if let Ok(mut cont_act) = self.containers[index].lock() {
-                cont_act.serve(*amount)?
+                cont_act.serve(*amount, report)?
             } else {
                 println!("Err: Por un error interno no se le puede servir un ingrediente.")
             }
@@ -29,4 +29,5 @@ impl Dispensers {
         println!("Cafe {} listo", coffe_act);
         Ok(())
     }
+
 }

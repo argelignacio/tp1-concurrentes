@@ -34,6 +34,8 @@ Padrón: 104351
 
 ## Decisiones de diseño
 
+- El archivo main es un programa que modela una cafetera como la requerida en el enunciado.
+
 - Los dispensers son manejados por una "cola de libres", cuyo acceso esta manejado por un semáforo. Mediante esto se garantiza no iterar los dispensers innecesariamente y que no hayan busy waits.
 
 - Los contenedores son contenidos por un Arc Mutex, que evita que sean tomados por 2 dispensers a la vez.
@@ -41,3 +43,12 @@ Padrón: 104351
 - En mi implementación, los dispenser sirven siempre en el mismo orden. Este orden esta dado por el iter definido en el enum de contenedores. Se podría optimizar para ir intercalando y ganando tiempo, pero no es un requerimiento y en la realidad al hacer un cafe los ingredientes no son permutables en orden.
 
 - La recarga no necesita de ningún tipo de sincronización, ya que son valores accedidos por y solo por un contenedor. Debido a esto, decidí que los contenedores secundarios para recargar ingredientes, formen parte del mismo struct de cada contenedor.
+
+- El archivo de pedidos es `orders.txt` con el siguiente formato:
+
+    30,12,1,1
+    1,3,8,1
+    1,9,1,1
+    25,9,1,1
+
+Donde la primera columna es cafe, la segunda agua, la tercera espuma y la cuarta cacao (según el iter del enum).

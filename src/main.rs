@@ -93,7 +93,6 @@ fn main() {
                     drop(cant);
                 }
             }
-            println!("INFO: Finalización de preparación del cafe. Dispenser liberado.");
             println!("------------------------------------------------------------------\n\n");
 
             if let Ok(mut dispensers_clone_act) = dispensers_clone.lock() {

@@ -1,18 +1,22 @@
 use crate::refillers::enum_refillers::RefillerTypes;
 
 pub struct Refiller {
+    max: u64,
     amount: u64,
     refiller_type: RefillerTypes,
     consumed: u64,
+    alert_capacity: f64,
 }
 
 impl Refiller {
-    pub fn new(amount: u64, refiller: RefillerTypes) -> Self {
+    pub fn new(amount: u64, refiller: RefillerTypes, alert_capacity: f64) -> Self {
         let consumed: u64 = 0;
         Self {
+            max: amount,
             amount,
             refiller_type: refiller,
             consumed,
+            alert_capacity,
         }
     }
 
@@ -26,7 +30,15 @@ impl Refiller {
         }
         if self.amount > amount {
             self.amount -= amount;
+            let percentage: f64 = ((self.amount) as f64 / (self.max) as f64) * 100.0;
+            if percentage < self.alert_capacity {
+                println!(
+                    "INFO: El recargador de {:#?} tiene menos de la mitad de su contenido.",
+                    self.refiller_type
+                );
+            }
             amount
+            
         } else {
             let old_amount: u64 = self.amount;
             self.amount = 0;
@@ -39,7 +51,7 @@ impl Refiller {
             RefillerTypes::Agua => {}
             RefillerTypes::Cacao => {}
             default => println!(
-                "Hasta el momento se han utilizado {} de {:#?}",
+                "INFO: Hasta el momento se han utilizado {} de {:#?}",
                 self.consumed, default
             ),
         };

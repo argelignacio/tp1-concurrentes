@@ -52,3 +52,5 @@ Padrón: 104351
     25,9,1,1
 
 Donde la primera columna es cafe, la segunda agua, la tercera espuma y la cuarta cacao (según el iter del enum).
+
+- En cuanto a los reportes, los mismo son hechos cada 3 cafes completados, y muestran la cantidad de cada contenedor y la cantidad de ingredientes gastados por la cafetera hasta el momento.

@@ -54,3 +54,5 @@ Padrón: 104351
 Donde la primera columna es cafe, la segunda agua, la tercera espuma y la cuarta cacao (según el iter del enum).
 
 - En cuanto a los reportes, los mismo son hechos cada 3 cafes completados, y muestran la cantidad de cada contenedor y la cantidad de ingredientes gastados por la cafetera hasta el momento.
+
+- Por decision de diseño, los reportes son activados cada cierto tiempo. Esto desencadena una reacción en los contenedores que, cuando terminan lo que están haciendo, imprimen sus estadísticas al momento.

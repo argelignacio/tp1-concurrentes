@@ -6,7 +6,7 @@ mod tests {
 
     #[test] 
     fn test_recharge() {
-        let mut refiller = Refiller::new(100, RefillerTypes::Agua, 15.0);
+        let mut refiller = Refiller::new(100, RefillerTypes::Granos, 15.0);
         assert_eq!(refiller.recharge(50), 50);
         assert_eq!(refiller.recharge(50), 50);
         assert_eq!(refiller.recharge(50), 0);

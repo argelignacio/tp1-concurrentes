@@ -10,9 +10,11 @@ mod tests {
         containers::{containers_class::Container, enum_containers::ContainerTypes},
         dispensers::dispensers_class::Dispensers,
     };
-
+   
+    
+    // Test de integracion
+    
     #[test]
-
     fn test_prepare_coffee() {
         let mut containers_vec: Vec<Arc<Mutex<Container>>> = vec![];
         for container_type in ContainerTypes::iter() {
@@ -45,7 +47,7 @@ mod tests {
         if let Ok(mut dispenser) = dispenser.lock(){
             let coffee_act = 1;
             let report = false;
-            assert_eq!(dispenser.prepare(order, coffee_act, report), Err(String::from("La cantidad de  es mayor a la capacidad del contenedor.")));
+            assert_eq!(dispenser.prepare(order, coffee_act, report), Err(String::from("La cantidad de Cafe es mayor a la capacidad del contenedor.")));
         };
     }
     #[test]

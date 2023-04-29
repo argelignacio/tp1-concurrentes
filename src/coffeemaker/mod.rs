@@ -1,0 +1,1 @@
+pub mod coffeemaker_class;

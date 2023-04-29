@@ -1,30 +1,70 @@
-#[cfg (test)]
+#[cfg(test)]
 
 mod tests {
-    use std::{sync::{Mutex, Arc}, vec};
+    use std::{
+        sync::{Arc, Mutex},
+        vec,
+    };
 
-    use mockall::mock;
-    use tp1::{dispensers::dispensers_class::Dispensers, containers::containers_class::Container};
+    use tp1::{
+        containers::{containers_class::Container, enum_containers::ContainerTypes},
+        dispensers::dispensers_class::Dispensers,
+    };
 
+    #[test]
 
-    mock! {
-        pub Container {
-            fn serve(&self, arg1: u64, arg2: bool) -> Result<(), String>;
+    fn test_prepare_coffee() {
+        let mut containers_vec: Vec<Arc<Mutex<Container>>> = vec![];
+        for container_type in ContainerTypes::iter() {
+            let container: Arc<Mutex<Container>> =
+                Arc::new(Mutex::new(Container::new(100, container_type, 15.0)));
+            containers_vec.push(container);
         }
+        let containers_ref: Arc<Vec<Arc<Mutex<Container>>>> =
+            Arc::clone(&Arc::new(containers_vec.clone()));
+        let dispenser = Arc::new(Mutex::new(Dispensers::new(containers_ref, 1)));
+        let order = vec![10, 10, 10, 10];
+        if let Ok(mut dispenser) = dispenser.lock(){
+            let coffee_act = 1;
+            let report = false;
+            assert_eq!(dispenser.prepare(order, coffee_act, report), Ok(()));
+        };
     }
-
-    #[test] 
-    fn test_prepare_coffe() {
-        let mut mock_container: MockContainer = MockContainer::new();    
-        
-        let vector = vec![Arc::new(Mutex::new(mock_container))];
-        let arc_vec = Arc::new(vector);
-        mock_container.expect_serve()
-            .withf(|arg1: u64, arg2: bool| arg1 == 1 && arg2 == true)
-            .times(1)
-            .returning(|_, _| Ok(()));
-
-        let calculator = Dispensers::new(arc_vec,3);
-        
+    #[test]
+    fn test_fail_prepare_coffee_container_capacity_exceeded() {
+        let mut containers_vec: Vec<Arc<Mutex<Container>>> = vec![];
+        for container_type in ContainerTypes::iter() {
+            let container: Arc<Mutex<Container>> =
+                Arc::new(Mutex::new(Container::new(100, container_type, 15.0)));
+            containers_vec.push(container);
+        }
+        let containers_ref: Arc<Vec<Arc<Mutex<Container>>>> =
+            Arc::clone(&Arc::new(containers_vec.clone()));
+        let dispenser = Arc::new(Mutex::new(Dispensers::new(containers_ref, 1)));
+        let order = vec![101, 10, 10, 10];
+        if let Ok(mut dispenser) = dispenser.lock(){
+            let coffee_act = 1;
+            let report = false;
+            assert_eq!(dispenser.prepare(order, coffee_act, report), Err(String::from("La cantidad de  es mayor a la capacidad del contenedor.")));
+        };
+    }
+    #[test]
+    fn test_fail_prepare_coffee_container_empty() {
+        let mut containers_vec: Vec<Arc<Mutex<Container>>> = vec![];
+        for container_type in ContainerTypes::iter() {
+            let container: Arc<Mutex<Container>> =
+                Arc::new(Mutex::new(Container::new(100, container_type, 15.0)));
+            containers_vec.push(container);
+        }
+        let containers_ref: Arc<Vec<Arc<Mutex<Container>>>> =
+            Arc::clone(&Arc::new(containers_vec.clone()));
+        let dispenser = Arc::new(Mutex::new(Dispensers::new(containers_ref, 1)));
+        let order = vec![100, 10, 10, 100];
+        if let Ok(mut dispenser) = dispenser.lock(){
+            let coffee_act = 1;
+            let report = false;
+            assert_eq!(dispenser.prepare(order.clone(), coffee_act, report), Ok(()));
+            assert_eq!(dispenser.prepare(order.clone(), coffee_act, report), Err(String::from("Nos quedamos sin Cacao.")));
+        };
     }
 }

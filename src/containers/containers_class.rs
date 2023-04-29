@@ -12,7 +12,7 @@ pub struct Container {
     consumed: u64,
 }
 
-/// El contenedor necesita conocer su capacidad maxima, el tipo de ingrediente que contiene y la 
+/// El contenedor necesita conocer su capacidad maxima, el tipo de ingrediente que contiene y la
 /// capacidad porcentual a la que debe imprimir alertas.
 impl Container {
     pub fn new(max: u64, cont: ContainerTypes, alert_capacity: f64) -> Self {
@@ -55,7 +55,7 @@ impl Container {
         }
         self.total_amount -= amount;
         self.consumed += amount;
-        thread::sleep(Duration::from_millis(amount*100));
+        thread::sleep(Duration::from_millis(amount));
         let percentage: f64 = ((self.total_amount) as f64 / (self.max_amount) as f64) * 100.0;
         if percentage < self.alert_capacity && !report {
             println!(

@@ -6,14 +6,22 @@ use std::{
 
 use crate::containers::containers_class::Container;
 
-const PERIOD_TO_REPORT: i32 = 1000;
+const PERIOD_TO_REPORT: i32 = 100;
+#[derive(Clone)]
 pub struct ReportMaker {
     report: Arc<RwLock<bool>>,
+}
+impl Default for ReportMaker {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ReportMaker {
     pub fn new() -> Self {
-        Self { report: Arc::new(RwLock::new(true)) }
+        Self {
+            report: Arc::new(RwLock::new(true)),
+        }
     }
     pub fn start_reports(
         &self,

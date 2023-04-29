@@ -10,10 +10,9 @@ mod tests {
         containers::{containers_class::Container, enum_containers::ContainerTypes},
         dispensers::dispensers_class::Dispensers,
     };
-   
-    
+
     // Test de integracion
-    
+
     #[test]
     fn test_prepare_coffee() {
         let mut containers_vec: Vec<Arc<Mutex<Container>>> = vec![];
@@ -26,7 +25,7 @@ mod tests {
             Arc::clone(&Arc::new(containers_vec.clone()));
         let dispenser = Arc::new(Mutex::new(Dispensers::new(containers_ref, 1)));
         let order = vec![10, 10, 10, 10];
-        if let Ok(mut dispenser) = dispenser.lock(){
+        if let Ok(mut dispenser) = dispenser.lock() {
             let coffee_act = 1;
             let report = false;
             assert_eq!(dispenser.prepare(order, coffee_act, report), Ok(()));
@@ -44,10 +43,15 @@ mod tests {
             Arc::clone(&Arc::new(containers_vec.clone()));
         let dispenser = Arc::new(Mutex::new(Dispensers::new(containers_ref, 1)));
         let order = vec![101, 10, 10, 10];
-        if let Ok(mut dispenser) = dispenser.lock(){
+        if let Ok(mut dispenser) = dispenser.lock() {
             let coffee_act = 1;
             let report = false;
-            assert_eq!(dispenser.prepare(order, coffee_act, report), Err(String::from("La cantidad de Cafe es mayor a la capacidad del contenedor.")));
+            assert_eq!(
+                dispenser.prepare(order, coffee_act, report),
+                Err(String::from(
+                    "La cantidad de Cafe es mayor a la capacidad del contenedor."
+                ))
+            );
         };
     }
     #[test]
@@ -62,11 +66,14 @@ mod tests {
             Arc::clone(&Arc::new(containers_vec.clone()));
         let dispenser = Arc::new(Mutex::new(Dispensers::new(containers_ref, 1)));
         let order = vec![100, 10, 10, 100];
-        if let Ok(mut dispenser) = dispenser.lock(){
+        if let Ok(mut dispenser) = dispenser.lock() {
             let coffee_act = 1;
             let report = false;
             assert_eq!(dispenser.prepare(order.clone(), coffee_act, report), Ok(()));
-            assert_eq!(dispenser.prepare(order.clone(), coffee_act, report), Err(String::from("Nos quedamos sin Cacao.")));
+            assert_eq!(
+                dispenser.prepare(order.clone(), coffee_act, report),
+                Err(String::from("Nos quedamos sin Cacao."))
+            );
         };
     }
 }

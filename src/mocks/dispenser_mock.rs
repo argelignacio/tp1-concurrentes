@@ -8,7 +8,7 @@ pub mod DispensersMock {
     pub struct Dispensers {
         pub order: Vec<u64>,
         pub coffe_act: u64,
-        pub report: bool,
+        pub called: bool,
     }
 
     /// El dispenser necesita conocer los contenedores de ingredientes y su número.
@@ -17,7 +17,7 @@ pub mod DispensersMock {
             Self {
                 order: vec![0, 0, 0, 0],
                 coffe_act: 0,
-                report: false,
+                called: false,
             }
         }
 
@@ -30,7 +30,7 @@ pub mod DispensersMock {
         ) -> Result<(), String> {
             self.order = order;
             self.coffe_act = coffe_act;
-            self.report = report;
+            self.called = report;
             Ok(())
         }
     }

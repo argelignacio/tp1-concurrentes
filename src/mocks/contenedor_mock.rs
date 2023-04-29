@@ -1,5 +1,3 @@
-
-
 #[cfg(test)]
 /// Este struct representa un contenedor de un ingrediente, el cual tiene una capacidad máxima y un tipo de ingrediente.
 pub struct Container {

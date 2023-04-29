@@ -41,7 +41,6 @@ impl Refiller {
                 );
             }
             amount
-            
         } else {
             let old_amount: u64 = self.amount;
             self.amount = 0;

@@ -1,8 +1,6 @@
 #[cfg(test)]
 use crate::mocks::contenedor_mock::Container;
 
-
-
 #[cfg(not(test))]
 use crate::containers::containers_class::Container;
 use std::sync::{Arc, Mutex};
@@ -29,7 +27,7 @@ impl Dispensers {
             "Cafe {} se esta preparando en dispenser {}",
             coffe_act, self.numb
         );
-        for (index, amount) in order.iter().enumerate() {       
+        for (index, amount) in order.iter().enumerate() {
             if let Ok(mut cont_act) = self.containers[index].lock() {
                 cont_act.serve(*amount, report)?;
             } else {

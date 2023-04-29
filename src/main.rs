@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 use std::fs;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, RwLock};
 
 use tp1::coffeemaker::coffeemaker_class::CoffeeMaker;
 use tp1::coffeemaker::report_maker::ReportMaker;
@@ -17,13 +17,15 @@ const ALERT_CAPACITY: f64 = 15.0;
 pub fn main() {
     let orders: Vec<Vec<u64>> = read_orders();
     let containers_vec: Vec<Arc<Mutex<Container>>> = create_containers();
-    let containers_ref = Arc::clone(&Arc::new(containers_vec.clone()));
+    let containers_ref: Arc<Vec<Arc<Mutex<Container>>>> =
+        Arc::clone(&Arc::new(containers_vec.clone()));
     let dispensers: VecDeque<Arc<Mutex<Dispensers>>> = create_dispensers(containers_vec);
     let coffeemaker = CoffeeMaker::new(orders, N_DISPENSERS, dispensers);
     let report_maker = ReportMaker::new();
     let report = report_maker.start_reports(Arc::new(Mutex::new(containers_ref.to_vec())));
-    coffeemaker.start_prepare_coffees(report_maker);
-    if let Err(e) = report.join(){
+    let report_maker_clone = Arc::new(RwLock::new(report_maker));
+    coffeemaker.start_prepare_coffees(&report_maker_clone);
+    if let Err(e) = report.join() {
         println!("Error: {:?}", e);
     }
 }

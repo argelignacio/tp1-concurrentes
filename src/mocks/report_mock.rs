@@ -5,32 +5,32 @@ pub mod ReportMock {
         thread,
         time::Duration,
     };
-    
-    use crate::containers::containers_class::Container;
-    
-    const PERIOD_TO_REPORT: i32 = 1000;
+
+    use crate::mocks::contenedor_mock::Container;
+    #[derive(Clone)]
     pub struct ReportMaker {
-        report: bool,
+        pub report: bool,
+        pub call_start_report: bool,
     }
-    
+
     impl ReportMaker {
         pub fn new() -> Self {
-            Self { report: True }
+            Self {
+                call_start_report: false,
+                report: true,
+            }
         }
         /// Esta función inicia el proceso de preparación de las ordenes y manejar los threads resultantes de las mismas.
         pub fn start_reports(
-            &self,
-            containers: Arc<Mutex<Vec<Arc<Mutex<Container>>>>>,
+            &mut self,
+            containers1: Arc<Mutex<Vec<Arc<Mutex<Container>>>>>,
         ) -> thread::JoinHandle<()> {
-
-            thread::spawn(move ||  {
-                
-            })
+            self.call_start_report = true;
+            thread::spawn(move || {})
         }
         /// Esta función se encarga de detener los reportes de los contenedores.
         pub fn stop_reports(&mut self) {
-           self.report = false
+            self.report = false
         }
     }
-    
 }

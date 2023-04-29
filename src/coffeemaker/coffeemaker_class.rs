@@ -7,13 +7,14 @@ use std::{
 use std_semaphore::Semaphore;
 
 #[cfg(test)]
-use crate::mocks::dispenser_mock::DispensersMock::Dispensers;
+use crate::mocks::{
+    dispenser_mock::DispensersMock::Dispensers, report_mock::ReportMock::ReportMaker,
+};
 
 #[cfg(not(test))]
+use super::report_maker::ReportMaker;
+#[cfg(not(test))]
 use crate::dispensers::dispensers_class::Dispensers;
-
-use super::report_maker::{ReportMaker};
-
 
 /// Este struct representa la cafetera, cuya responsabilidad es orquestar la preparación de las ordenes llevando un conteo de los cafes preparados.
 pub struct CoffeeMaker {
@@ -46,7 +47,7 @@ impl CoffeeMaker {
     }
 
     /// Esta función inicia el proceso de preparación de las ordenes y manejar los threads resultantes de las mismas.
-    pub fn start_prepare_coffees(mut self,mut report_maker: ReportMaker) {
+    pub fn start_prepare_coffees(mut self, report_maker: &Arc<RwLock<ReportMaker>>) {
         let mut coffee_act = 0;
         for order in &self.orders {
             let cantidad_cafes_clone: Arc<RwLock<i32>> = Arc::clone(&self.count_coffees_processed);
@@ -67,14 +68,16 @@ impl CoffeeMaker {
         for handle in self.threads {
             handle.join().expect("Error joining a thread");
         }
-        report_maker.stop_reports();
+        if let Ok(mut report) = report_maker.write() {
+            report.stop_reports();
+        }
         println!("Todos los cafes fueron preparados!");
     }
 
     /// Esta función se encarga de enviar, a algún dispenser disponible, la orden para poder ser preparada.
     /// Esto incluye el manejo de los dispensers y en base al conteo de cafes preparados, se decide si se debe reportar el estado de los
     /// dispensers.
-    pub fn init_order(
+    fn init_order(
         &self,
         order: Vec<u64>,
         sem: Arc<Semaphore>,
@@ -129,7 +132,7 @@ impl CoffeeMaker {
             println!("------------------------------------------------------------------\n\n");
 
             if let Ok(mut dispensers_clone_act) = dispensers.lock() {
-                dispensers_clone_act.push_front(dispenser_guard);
+                dispensers_clone_act.push_back(dispenser_guard);
                 sem.release()
             } else {
                 println!("Por error interno, se perdió un dispenser")

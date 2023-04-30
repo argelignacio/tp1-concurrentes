@@ -33,6 +33,7 @@ impl Refiller {
         }
         if self.amount > amount {
             self.amount -= amount;
+            self.consumed += amount;
             let percentage: f64 = ((self.amount) as f64 / (self.max) as f64) * 100.0;
             if percentage < self.alert_capacity {
                 println!(
@@ -43,6 +44,7 @@ impl Refiller {
             amount
         } else {
             let old_amount: u64 = self.amount;
+            self.consumed += self.amount;
             self.amount = 0;
             old_amount
         }

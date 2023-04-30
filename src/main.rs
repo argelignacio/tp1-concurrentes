@@ -10,7 +10,7 @@ use tp1::containers::enum_containers::ContainerTypes;
 use tp1::dispensers::dispensers_class::Dispensers;
 
 const N_DISPENSERS: isize = 6;
-const MAX_CAPACITY_CONTAINERS: u64 = 2000;
+const MAX_CAPACITY_CONTAINERS: u64 = 100;
 const ALERT_CAPACITY: f64 = 15.0;
 
 ///Esta función inicializa toda la cafetera e inicia el proceso de preparación de las ordenes.

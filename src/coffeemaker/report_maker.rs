@@ -6,7 +6,7 @@ use std::{
 
 use crate::containers::containers_class::Container;
 
-const PERIOD_TO_REPORT: i32 = 100;
+const PERIOD_TO_REPORT: i32 = 50;
 #[derive(Clone)]
 pub struct ReportMaker {
     report: Arc<RwLock<bool>>,

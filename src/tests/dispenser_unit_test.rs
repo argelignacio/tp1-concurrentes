@@ -35,12 +35,18 @@ pub mod dispenser_unit_test {
     }
     #[test]
     fn test_prepare_coffee_calls_well_with_few_containers() {
-        let containers_vec: Vec<Arc<Mutex<Container>>> =
-            vec![Arc::new(Mutex::new(Container::new())), Arc::new(Mutex::new(Container::new())), Arc::new(Mutex::new(Container::new()))];
+        let containers_vec: Vec<Arc<Mutex<Container>>> = vec![
+            Arc::new(Mutex::new(Container::new())),
+            Arc::new(Mutex::new(Container::new())),
+            Arc::new(Mutex::new(Container::new())),
+        ];
         let containers_ref: Arc<Vec<Arc<Mutex<Container>>>> =
             Arc::clone(&Arc::new(containers_vec.clone()));
         let dispenser = Arc::new(Mutex::new(Dispensers::new(containers_ref, 1)));
-        dispenser.lock().expect("error").prepare(vec![20, 22, 24], 1, true);
+        dispenser
+            .lock()
+            .expect("error")
+            .prepare(vec![20, 22, 24], 1, true);
         assert_eq!(containers_vec[0].lock().expect("Error en test").amount, 20);
         assert_eq!(
             containers_vec[0].lock().expect("Error en test").report,

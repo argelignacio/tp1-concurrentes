@@ -4,7 +4,6 @@ mod tests {
     use tp1::containers::containers_class::Container;
     use tp1::containers::enum_containers::ContainerTypes;
 
-
     #[test]
     fn test_serve_cafe() {
         let mut container = Container::new(100, ContainerTypes::Cafe, 10.0);
@@ -20,16 +19,16 @@ mod tests {
         assert_eq!(container.serve(50, false), Ok(()));
         assert_eq!(
             container.serve(90, false),
-            Err(String::from("Nos quedamos sin Cafe."))
+            Err(String::from("ERR: Nos quedamos sin Cafe."))
         );
     }
     #[test]
-    fn test_serve_cafe_overflow(){
+    fn test_serve_cafe_overflow() {
         let mut container = Container::new(100, ContainerTypes::Cafe, 10.0);
         assert_eq!(
             container.serve(3000, false),
             Err(String::from(
-                "La cantidad de Cafe es mayor a la capacidad del contenedor."
+                "ERR: La cantidad de Cafe es mayor a la capacidad del contenedor."
             ))
         );
     }
@@ -40,7 +39,7 @@ mod tests {
         assert_eq!(
             container.serve(3000, false),
             Err(String::from(
-                "La cantidad de Agua es mayor a la capacidad del contenedor."
+                "ERR: La cantidad de Agua es mayor a la capacidad del contenedor."
             ))
         );
     }
@@ -71,16 +70,16 @@ mod tests {
         assert_eq!(container.serve(50, false), Ok(()));
         assert_eq!(
             container.serve(90, false),
-            Err(String::from("Nos quedamos sin Cacao."))
+            Err(String::from("ERR: Nos quedamos sin Cacao."))
         );
     }
     #[test]
-    fn test_serve_cacao_overflow(){
+    fn test_serve_cacao_overflow() {
         let mut container = Container::new(100, ContainerTypes::Cacao, 10.0);
         assert_eq!(
             container.serve(3000, false),
             Err(String::from(
-                "La cantidad de Cacao es mayor a la capacidad del contenedor."
+                "ERR: La cantidad de Cacao es mayor a la capacidad del contenedor."
             ))
         );
     }
@@ -94,7 +93,7 @@ mod tests {
         assert_eq!(
             container.serve(3000, false),
             Err(String::from(
-                "La cantidad de Espuma es mayor a la capacidad del contenedor."
+                "ERR: La cantidad de Espuma es mayor a la capacidad del contenedor."
             ))
         );
     }
@@ -106,18 +105,17 @@ mod tests {
         assert_eq!(container.serve(50, false), Ok(()));
         assert_eq!(
             container.serve(90, false),
-            Err(String::from("Nos quedamos sin Espuma."))
+            Err(String::from("ERR: Nos quedamos sin Espuma."))
         );
     }
     #[test]
-    fn test_serve_espuma_overflow(){
+    fn test_serve_espuma_overflow() {
         let mut container = Container::new(100, ContainerTypes::Espuma, 10.0);
         assert_eq!(
             container.serve(3000, false),
             Err(String::from(
-                "La cantidad de Espuma es mayor a la capacidad del contenedor."
+                "ERR: La cantidad de Espuma es mayor a la capacidad del contenedor."
             ))
         );
     }
-    
 }

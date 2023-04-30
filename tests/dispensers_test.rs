@@ -49,7 +49,7 @@ mod tests {
             assert_eq!(
                 dispenser.prepare(order, coffee_act, report),
                 Err(String::from(
-                    "La cantidad de Cafe es mayor a la capacidad del contenedor."
+                    "ERR: La cantidad de Cafe es mayor a la capacidad del contenedor."
                 ))
             );
         };
@@ -72,7 +72,7 @@ mod tests {
             assert_eq!(dispenser.prepare(order.clone(), coffee_act, report), Ok(()));
             assert_eq!(
                 dispenser.prepare(order.clone(), coffee_act, report),
-                Err(String::from("Nos quedamos sin Cacao."))
+                Err(String::from("ERR: Nos quedamos sin Cacao."))
             );
         };
     }

@@ -37,14 +37,14 @@ impl Container {
     pub fn serve(&mut self, amount: u64, report: bool) -> Result<(), String> {
         if amount > self.max_amount {
             return Err(format!(
-                "La cantidad de {:#?} es mayor a la capacidad del contenedor.",
+                "ERR: La cantidad de {:#?} es mayor a la capacidad del contenedor.",
                 self.cont_type
             ));
         }
         if amount > self.total_amount {
             let to_recharge = self.refiller.recharge(self.max_amount);
             if to_recharge == 0 {
-                return Err(format!("Nos quedamos sin {:#?}.", self.cont_type));
+                return Err(format!("ERR: Nos quedamos sin {:#?}.", self.cont_type));
             } else {
                 println!(
                     "INFO: El contenedor de {:#?} ha sido recargado.",

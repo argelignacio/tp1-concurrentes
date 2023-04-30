@@ -68,6 +68,9 @@ impl CoffeeMaker {
         for handle in self.threads {
             handle.join().expect("Error joining a thread");
         }
+        if let Ok(cantidad_listos) = self.count_coffees_processed.read() {
+            println!("Se prepararon {} cafes", cantidad_listos);
+        }
         if let Ok(mut report) = report_maker.write() {
             report.stop_reports();
         }

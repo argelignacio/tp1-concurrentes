@@ -33,21 +33,20 @@ pub mod coffemaker_unit_test {
             assert_eq!(rep.call_start_report, true);
         }
         std::thread::sleep(std::time::Duration::from_secs(1));
-        
+
         if let Ok(disp) = dispensers_ref[0].lock() {
-            assert_eq!(disp.coffe_act<=2, true);
-            assert_eq!(orders.contains(&disp.order) , true);
+            assert_eq!(disp.coffe_act <= 2, true);
+            assert_eq!(orders.contains(&disp.order), true);
         }
         if let Ok(disp) = dispensers_ref[1].lock() {
-            assert_eq!(disp.coffe_act<=2, true);
+            assert_eq!(disp.coffe_act <= 2, true);
             assert_eq!(orders.contains(&disp.order), true);
         }
         if let Err(e) = report.join() {
             println!("Error: {:?}", e);
         }
-        
     }
-    #[test]    
+    #[test]
     fn test_start_no_prepare_empty_orders() {
         let containers_vec: Vec<Arc<Mutex<Container>>> = create_containers();
         let orders: Vec<Vec<u64>> = vec![vec![1u64; 0]; 0];
@@ -67,21 +66,20 @@ pub mod coffemaker_unit_test {
             assert_eq!(rep.call_start_report, true);
         }
         std::thread::sleep(std::time::Duration::from_secs(1));
-        
+
         if let Ok(disp) = dispensers_ref[0].lock() {
-            assert_eq!(disp.coffe_act==0, true);
-            assert_eq!(disp.called , false);
-            assert_eq!(disp.order, [0,0,0,0]);
+            assert_eq!(disp.coffe_act == 0, true);
+            assert_eq!(disp.called, false);
+            assert_eq!(disp.order, [0, 0, 0, 0]);
         }
         if let Ok(disp) = dispensers_ref[1].lock() {
-            assert_eq!(disp.coffe_act==0, true);
+            assert_eq!(disp.coffe_act == 0, true);
             assert_eq!(disp.called, false);
-            assert_eq!(disp.order, [0,0,0,0]);
+            assert_eq!(disp.order, [0, 0, 0, 0]);
         }
         if let Err(e) = report.join() {
             println!("Error: {:?}", e);
         }
-        
     }
     /// Esta función crea los contenedores de ingredientes de la cafetera.
     fn create_containers() -> Vec<Arc<Mutex<Container>>> {

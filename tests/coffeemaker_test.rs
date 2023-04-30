@@ -10,7 +10,7 @@ mod tests {
     use tp1::{
         coffeemaker::{coffeemaker_class::CoffeeMaker, report_maker::ReportMaker},
         containers::{containers_class::Container, enum_containers::ContainerTypes},
-        dispensers::{dispensers_class::Dispensers},
+        dispensers::dispensers_class::Dispensers,
         mocks,
     };
 
@@ -18,7 +18,8 @@ mod tests {
     fn test_start_prepare_coffees() {
         let orders = vec![vec![1, 1, 1, 1], vec![1, 1, 1, 1], vec![1, 1, 1, 1]];
         let containers_vec: Vec<Arc<Mutex<Container>>> = create_containers();
-        let dispensers: VecDeque<Arc<Mutex<Dispensers>>> = create_dispensers(containers_vec.clone());
+        let dispensers: VecDeque<Arc<Mutex<Dispensers>>> =
+            create_dispensers(containers_vec.clone());
         let coffeemaker = CoffeeMaker::new(orders, 2, dispensers);
         let report_maker = ReportMaker::new();
         let report = report_maker.start_reports(Arc::new(Mutex::new(containers_vec.to_vec())));
@@ -27,13 +28,13 @@ mod tests {
         if let Err(e) = report.join() {
             println!("Error: {:?}", e);
         }
-        
     }
     /// Esta función crea los contenedores de ingredientes de la cafetera.
     fn create_containers() -> Vec<Arc<Mutex<Container>>> {
         let mut containers_vec: Vec<Arc<Mutex<Container>>> = vec![];
         for container_type in ContainerTypes::iter() {
-            let container: Arc<Mutex<Container>> = Arc::new(Mutex::new(Container::new(3, container_type, 15.0)));
+            let container: Arc<Mutex<Container>> =
+                Arc::new(Mutex::new(Container::new(3, container_type, 15.0)));
             containers_vec.push(container);
         }
         containers_vec

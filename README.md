@@ -47,10 +47,26 @@ Padrón: 104351
 - El archivo de pedidos es `orders.txt` con el siguiente formato:
 
     30,12,1,1
-    1,3,8,1
-    1,9,1,1
-    25,9,1,1
 
-Donde la primera columna es cafe, la segunda agua, la tercera espuma y la cuarta cacao (según el iter del enum).
+    1,3,8,1
+
+    1,9,1,1
+
+    25,9,1,1
+    
+    Donde la primera columna es cafe, la segunda agua, la tercera espuma y la cuarta cacao (según el iter del enum). Tiene que tener exactamente ese formato.
 
 - En cuanto a los reportes, los mismo son hechos cada 3 cafes completados, y muestran la cantidad de cada contenedor y la cantidad de ingredientes gastados por la cafetera hasta el momento.
+
+- Por decision de diseño, los reportes son activados cada cierto tiempo. Esto desencadena una reacción en los contenedores que, cuando terminan lo que están haciendo, imprimen sus estadísticas al momento.
+
+- Cada 50 milisegundos se inician estos reportes. En caso de querer cambiar esto, en `report_maker.rs` se cambia la constante PERIOD_TO_REPORT.
+
+- Se adjuntan los listados de ordenes de los casos de pruebas dadas como:
+
+    - `orders.txt`: Caso feliz, todos los cafes (50) fueron preparados
+    - `orders1.txt`: Caso feliz, todos los cafes (51) fueron preparados. En el medio se producen recargas de los contenedores, salvo el cacao que no tiene por enunciado
+    - `orders2.txt`: Falla al tratar de aplicar cacao post vaciar el contenedor.
+    - `orders3.txt`: Falla, pero continua con las ordenes que si se pueden terminar.
+    
+        Para ejecutarlos, cambiar el nombre de las ordenes a ejecutar por `orders.txt`

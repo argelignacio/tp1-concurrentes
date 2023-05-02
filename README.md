@@ -68,3 +68,5 @@ Padrón: 104351
     - `orders1.txt`: Caso feliz, todos los cafes (51) fueron preparados. En el medio se producen recargas de los contenedores, salvo el cacao que no tiene por enunciado
     - `orders2.txt`: Falla al tratar de aplicar cacao post vaciar el contenedor.
     - `orders3.txt`: Falla, pero continua con las ordenes que si se pueden terminar.
+    
+        Para ejecutarlos, cambiar el nombre de las ordenes a ejecutar por `orders.txt`
